@@ -57,6 +57,11 @@ function ArenaView() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link to="/arenas/$arenaId/canvas" params={{ arenaId: arena.id }}>
+              <Button variant="outline">
+                <Network size={14} /> Arena Overview
+              </Button>
+            </Link>
             <Button variant="outline" onClick={() => openBrandDna(arena.id)}>
               <Sparkles size={14} /> Brand DNA
             </Button>
@@ -64,6 +69,7 @@ function ArenaView() {
               <Plus size={14} /> New Post
             </Button>
           </div>
+
         </div>
       </header>
 
