@@ -1,10 +1,14 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { arenaAccent, type Arena, type Post } from "@/lib/orbit-store";
 import { PlatformIcon } from "@/components/PlatformIcon";
-import { Calendar } from "lucide-react";
+import { Calendar, Network } from "lucide-react";
+
+
 
 export function ArenaCard({ arena, posts }: { arena: Arena; posts: Post[] }) {
   const accent = arenaAccent[arena.color];
+  const navigate = useNavigate();
+
   const scheduled = posts
     .filter((p) => p.arenaId === arena.id && p.status === "scheduled")
     .slice(0, 3);
@@ -70,6 +74,24 @@ export function ArenaCard({ arena, posts }: { arena: Arena; posts: Post[] }) {
           </div>
         ))}
       </div>
+
+      <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between relative z-10">
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Pipeline</span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate({ to: "/arenas/$arenaId/canvas", params: { arenaId: arena.id } });
+          }}
+          className="text-[11px] inline-flex items-center gap-1 hover:underline"
+          style={{ color: accent.hex }}
+        >
+          <Network size={11} /> View Canvas
+        </button>
+
+      </div>
     </Link>
   );
 }
+
