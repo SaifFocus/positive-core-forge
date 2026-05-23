@@ -4,7 +4,7 @@ import { PlatformIcon } from "@/components/PlatformIcon";
 import { PostCard } from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Sparkles, ChevronLeft } from "lucide-react";
+import { Plus, Sparkles, ChevronLeft, Network } from "lucide-react";
 
 export const Route = createFileRoute("/arenas/$arenaId")({
   head: ({ params }) => ({
