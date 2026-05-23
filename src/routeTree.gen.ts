@@ -15,6 +15,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArenasIndexRouteImport } from './routes/arenas.index'
 import { Route as ArenasArenaIdRouteImport } from './routes/arenas.$arenaId'
+import { Route as ArenasArenaIdCanvasRouteImport } from './routes/arenas.$arenaId.canvas'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -46,22 +47,29 @@ const ArenasArenaIdRoute = ArenasArenaIdRouteImport.update({
   path: '/arenas/$arenaId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArenasArenaIdCanvasRoute = ArenasArenaIdCanvasRouteImport.update({
+  id: '/canvas',
+  path: '/canvas',
+  getParentRoute: () => ArenasArenaIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
-  '/arenas/$arenaId': typeof ArenasArenaIdRoute
+  '/arenas/$arenaId': typeof ArenasArenaIdRouteWithChildren
   '/arenas/': typeof ArenasIndexRoute
+  '/arenas/$arenaId/canvas': typeof ArenasArenaIdCanvasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
-  '/arenas/$arenaId': typeof ArenasArenaIdRoute
+  '/arenas/$arenaId': typeof ArenasArenaIdRouteWithChildren
   '/arenas': typeof ArenasIndexRoute
+  '/arenas/$arenaId/canvas': typeof ArenasArenaIdCanvasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +77,9 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
-  '/arenas/$arenaId': typeof ArenasArenaIdRoute
+  '/arenas/$arenaId': typeof ArenasArenaIdRouteWithChildren
   '/arenas/': typeof ArenasIndexRoute
+  '/arenas/$arenaId/canvas': typeof ArenasArenaIdCanvasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/arenas/$arenaId'
     | '/arenas/'
+    | '/arenas/$arenaId/canvas'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/arenas/$arenaId'
     | '/arenas'
+    | '/arenas/$arenaId/canvas'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/arenas/$arenaId'
     | '/arenas/'
+    | '/arenas/$arenaId/canvas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,7 +116,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   CalendarRoute: typeof CalendarRoute
   SettingsRoute: typeof SettingsRoute
-  ArenasArenaIdRoute: typeof ArenasArenaIdRoute
+  ArenasArenaIdRoute: typeof ArenasArenaIdRouteWithChildren
   ArenasIndexRoute: typeof ArenasIndexRoute
 }
 
@@ -152,17 +164,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArenasArenaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/arenas/$arenaId/canvas': {
+      id: '/arenas/$arenaId/canvas'
+      path: '/canvas'
+      fullPath: '/arenas/$arenaId/canvas'
+      preLoaderRoute: typeof ArenasArenaIdCanvasRouteImport
+      parentRoute: typeof ArenasArenaIdRoute
+    }
   }
 }
+
+interface ArenasArenaIdRouteChildren {
+  ArenasArenaIdCanvasRoute: typeof ArenasArenaIdCanvasRoute
+}
+
+const ArenasArenaIdRouteChildren: ArenasArenaIdRouteChildren = {
+  ArenasArenaIdCanvasRoute: ArenasArenaIdCanvasRoute,
+}
+
+const ArenasArenaIdRouteWithChildren = ArenasArenaIdRoute._addFileChildren(
+  ArenasArenaIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
   CalendarRoute: CalendarRoute,
   SettingsRoute: SettingsRoute,
-  ArenasArenaIdRoute: ArenasArenaIdRoute,
+  ArenasArenaIdRoute: ArenasArenaIdRouteWithChildren,
   ArenasIndexRoute: ArenasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
