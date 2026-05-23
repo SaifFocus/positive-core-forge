@@ -77,15 +77,19 @@ export function ArenaCard({ arena, posts }: { arena: Arena; posts: Post[] }) {
 
       <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between relative z-10">
         <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Pipeline</span>
-        <Link
-          to="/arenas/$arenaId/canvas"
-          params={{ arenaId: arena.id }}
-          onClick={(e) => e.stopPropagation()}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate({ to: "/arenas/$arenaId/canvas", params: { arenaId: arena.id } });
+          }}
           className="text-[11px] inline-flex items-center gap-1 hover:underline"
           style={{ color: accent.hex }}
         >
           <Network size={11} /> View Canvas
-        </Link>
+        </button>
+
       </div>
     </Link>
   );
