@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { arenaAccent, type Arena, type Post } from "@/lib/orbit-store";
 import { PlatformIcon } from "@/components/PlatformIcon";
-import { Calendar } from "lucide-react";
+import { Calendar, Network } from "lucide-react";
+
 
 export function ArenaCard({ arena, posts }: { arena: Arena; posts: Post[] }) {
   const accent = arenaAccent[arena.color];
