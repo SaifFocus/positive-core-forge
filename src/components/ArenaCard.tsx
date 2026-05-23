@@ -7,6 +7,8 @@ import { Calendar, Network } from "lucide-react";
 
 export function ArenaCard({ arena, posts }: { arena: Arena; posts: Post[] }) {
   const accent = arenaAccent[arena.color];
+  const navigate = useNavigate();
+
   const scheduled = posts
     .filter((p) => p.arenaId === arena.id && p.status === "scheduled")
     .slice(0, 3);
