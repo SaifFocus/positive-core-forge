@@ -143,27 +143,15 @@ function ArenaCanvas() {
         });
         edges.push({
           id: `e-acc-${accId}-${p.id}`,
-          source: `acc-${acc.id ? "" : ""}${accId}`.replace("acc-acc-", "acc-") || `acc-${accId}`,
+          source: `acc-${accId}`,
           target: id,
           style: { stroke: statusColor[p.status], strokeWidth: 1, opacity: 0.5 },
         });
       });
     });
 
-    // Fix source ids above (simpler rewrite)
-    // We'll rebuild edges for posts using correct IDs:
-    // Remove malformed
-    const cleanEdges = edges.filter((e) => !e.id.startsWith("e-acc-"));
-    postsByAccount.forEach((list, accId) => {
-      list.forEach((p) => {
-        cleanEdges.push({
-          id: `e-acc-${accId}-${p.id}`,
-          source: `acc-${accId}`,
-          target: `post-${p.id}`,
-          style: { stroke: statusColor[p.status], strokeWidth: 1, opacity: 0.5 },
-        });
-      });
-    });
+    const cleanEdges = edges;
+
 
     // Campaign chains
     const campaigns = new Map<string, typeof visiblePosts>();
